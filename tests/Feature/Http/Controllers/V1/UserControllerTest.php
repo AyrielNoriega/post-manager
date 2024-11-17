@@ -5,18 +5,24 @@ namespace Tests\Feature\Http\Controllers\V1;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
+    
     /**
      *  Prueba para mostrar todos los usuarios.
      * @return void
      */
     public function test_all_users(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->getJson('/api/v1/users');
         $response->assertStatus(200);
     }
@@ -58,6 +64,11 @@ class UserControllerTest extends TestCase
     public function test_show_user(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+        
         $response = $this->getJson("/api/v1/users/{$user->id}");
         $response->assertStatus(200);
         $response->assertJsonFragment([
@@ -73,7 +84,12 @@ class UserControllerTest extends TestCase
      */
     public function test_show_user_not_found(): void
     {
-        $response = $this->getJson('/api/v1/users/1');
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+        $response = $this->getJson('/api/v1/users/2');
         $response->assertStatus(404);
     }
 
@@ -85,6 +101,10 @@ class UserControllerTest extends TestCase
     public function test_update_user(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->putJson("/api/v1/users/{$user->id}", $user->toArray());
         $response->assertStatus(200);
         $response->assertJsonFragment([
@@ -101,6 +121,10 @@ class UserControllerTest extends TestCase
     public function test_update_user_not_found(): void
     {
         $user = User::factory()->make();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->putJson('/api/v1/users/1', $user->toArray());
         $response->assertStatus(404);
     }
@@ -113,6 +137,10 @@ class UserControllerTest extends TestCase
     public function test_update_user_with_invalid_data(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->putJson("/api/v1/users/{$user->id}", ['email' => 'invalid_email']);
         $response->assertStatus(422);
     }
@@ -125,6 +153,10 @@ class UserControllerTest extends TestCase
     public function test_delete_user(): void
     {
         $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->deleteJson("/api/v1/users/{$user->id}");
         $response->assertStatus(204);
     }
@@ -136,7 +168,12 @@ class UserControllerTest extends TestCase
      */
     public function test_delete_user_not_found(): void
     {
-        $response = $this->deleteJson('/api/v1/users/1');
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
+        $response = $this->deleteJson('/api/v1/users/2');
         $response->assertStatus(404);
     }
 }

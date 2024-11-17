@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class PostControllerTest extends TestCase
@@ -33,7 +34,11 @@ class PostControllerTest extends TestCase
      */
     public function test_store_post(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $post = Post::factory()->create();
         $response = $this->postJson('/api/v1/posts', $post->toArray());
         $response->assertStatus(201);
@@ -52,7 +57,11 @@ class PostControllerTest extends TestCase
      */
     public function test_store_post_validation_error(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->postJson('/api/v1/posts', []);
         $response->assertStatus(422);
         $response->assertHeader('content-type', 'application/json');
@@ -97,7 +106,11 @@ class PostControllerTest extends TestCase
      */
     public function test_update_post(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $post = Post::factory()->create();
         $response = $this->putJson("/api/v1/posts/{$post->id}", $post->toArray());
         $response->assertStatus(200);
@@ -116,7 +129,11 @@ class PostControllerTest extends TestCase
      */
     public function test_update_post_not_found(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->putJson('/api/v1/posts/1', []);
         $response->assertStatus(404);
         $response->assertHeader('content-type', 'application/json');
@@ -147,7 +164,11 @@ class PostControllerTest extends TestCase
      */
     public function test_delete_post(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $post = Post::factory()->create();
         $response = $this->deleteJson("/api/v1/posts/{$post->id}");
         $response->assertStatus(204);
@@ -160,7 +181,11 @@ class PostControllerTest extends TestCase
      */
     public function test_delete_post_not_found(): void
     {
-        User::factory()->create();
+        $user = User::factory()->create();
+        Sanctum::actingAs(
+            $user,
+            ['*']
+        );
         $response = $this->deleteJson('/api/v1/posts/1');
         $response->assertStatus(404);
         $response->assertHeader('content-type', 'application/json');
