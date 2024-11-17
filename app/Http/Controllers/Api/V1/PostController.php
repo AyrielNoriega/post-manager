@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\PostCollection;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -24,7 +25,8 @@ class PostController extends Controller
     {
         try {
             $posts = Post::all();
-            return response()->json($posts);
+            // return response()->json($posts);
+            return new PostCollection($posts);
         } catch (\Exception $e) {
             Log::error("An error occurred: {$e->getMessage()}");
             return response()->json(['message' => 'An error occurred'], 500);

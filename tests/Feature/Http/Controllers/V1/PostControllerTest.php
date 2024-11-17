@@ -24,7 +24,7 @@ class PostControllerTest extends TestCase
         $response = $this->getJson('/api/v1/posts');
         $response->assertSuccessful();
         $response->assertHeader('content-type', 'application/json');
-        $response->assertJsonCount(5);
+        $response->assertJsonCount(5, 'data');
     }
 
 
