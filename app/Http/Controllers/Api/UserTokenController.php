@@ -39,6 +39,7 @@ class UserTokenController extends Controller
         return response()->json([
             'data' => [
                 'attributes' => [
+                    'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
                 ],
